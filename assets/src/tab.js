@@ -149,10 +149,21 @@ var Body = React.createClass({
   render: function() {
     return (
       <div>
-        <Header />
-        <Corners />
-        <Desks />
-        <Page />
+        <Header
+          core={this.props.data.core}
+          weather={this.props.data.weather} />
+
+        <Corners
+          corners={this.props.data.corners} />
+
+        <Desks
+          core={this.props.data.core}
+          day={this.props.data.day} />
+
+        <Page
+          core={this.props.data.core}
+          day={this.props.data.day}
+          links={this.props.data.links} />
 
         <footer>
           <a href="options.html">Options</a>
@@ -164,7 +175,7 @@ var Body = React.createClass({
 
 $(function(){
   React.render(
-    <Body />,
+    <Body data={Data} />,
     document.body
   );
 });

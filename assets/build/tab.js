@@ -149,10 +149,21 @@ var Body = React.createClass({displayName: "Body",
   render: function() {
     return (
       React.createElement("div", null, 
-        React.createElement(Header, null), 
-        React.createElement(Corners, null), 
-        React.createElement(Desks, null), 
-        React.createElement(Page, null), 
+        React.createElement(Header, {
+          core: this.props.data.core, 
+          weather: this.props.data.weather}), 
+
+        React.createElement(Corners, {
+          corners: this.props.data.corners}), 
+
+        React.createElement(Desks, {
+          core: this.props.data.core, 
+          day: this.props.data.day}), 
+
+        React.createElement(Page, {
+          core: this.props.data.core, 
+          day: this.props.data.day, 
+          links: this.props.data.links}), 
 
         React.createElement("footer", null, 
           React.createElement("a", {href: "options.html"}, "Options")
@@ -164,7 +175,7 @@ var Body = React.createClass({displayName: "Body",
 
 $(function(){
   React.render(
-    React.createElement(Body, null),
+    React.createElement(Body, {data: Data}),
     document.body
   );
 });
