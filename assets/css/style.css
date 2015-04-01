@@ -74,11 +74,11 @@ header em {
   font-weight: 400;
 }
 
-header em span {
+header em .weather-hidden {
   display: none;
 }
 
-header:hover em span {
+header:hover em .weather-hidden {
   display: inline;
 }
 
@@ -116,22 +116,22 @@ nav a:hover {
   border-color: #00f;
 }
 
-.nav-progress > a {
+nav li:nth-child(1) > a {
   top: 70px;
   right: 20px;
 }
 
-.nav-gmail > a {
+nav li:nth-child(2) > a {
   bottom: 20px;
   right: 20px;
 }
 
-.nav-github > a {
+nav li:nth-child(3) > a {
   bottom: 20px;
   left: 20px;
 }
 
-.nav-tumblr > a {
+nav li:nth-child(4) > a {
   top: 70px;
   left: 20px;
 }
@@ -297,7 +297,7 @@ section li a:hover {
 }
 
 #desks {
-  display: none;
+/*  display: none;*/
   position: absolute;
   z-index: 6;
   top: 50%;
@@ -328,12 +328,25 @@ section li a:hover {
   text-align: center;
 }
 
+#desks > h2 {
+  margin: 10px 0 30px 0;
+  text-align: center;
+}
+
 #desks > ul {
 
 }
 
 #desks li {
   margin: 10px 0;
+}
+
+#desks li:before {
+  content: "\00a0";
+}
+
+#desks li:nth-child(9) ~ li:before {
+  content: "";
 }
 
 #desks a {

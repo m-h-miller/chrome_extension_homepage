@@ -1,5 +1,3 @@
-
-
 var PageLinksListItem = React.createClass({displayName: "PageLinksListItem",
   render: function() {
     return (
@@ -86,9 +84,20 @@ var Page = React.createClass({displayName: "Page",
 
 var Corners = React.createClass({displayName: "Corners",
   render: function() {
+    var links = [];
+
+    this.props.corners.forEach(function(link){
+      links.push(
+        React.createElement("li", null, 
+          React.createElement("a", {href: link.url}, link.title)
+        )
+      );
+    });
+
     return (
       React.createElement("nav", null, 
-        React.createElement("ul", null
+        React.createElement("ul", null, 
+          links
         )
       )
     );
@@ -98,8 +107,23 @@ var Corners = React.createClass({displayName: "Corners",
 
 var Header = React.createClass({displayName: "Header",
   render: function() {
+
+    var city = this.props.core.cityId == 1 ? "NYC" : "SF";
+    var degreeCel = parseInt(this.props.weather.main.temp);
+    var degreeFar = parseInt((degreeCel * 9 / 5) + 32);
+
     return (
       React.createElement("header", {className: "group"}, 
+        React.createElement("em", {className: "weather-left"}, 
+          city, " / ", this.props.weather.weather[0].main, 
+          React.createElement("span", {className: "weather-hidden"}, " — ", this.props.weather.weather[0].description)
+        ), 
+
+        React.createElement("em", {className: "weather-right"}, 
+          React.createElement("span", {className: "weather-hidden"}, degreeFar, " ° F / "), 
+          degreeCel, " ° C"
+        ), 
+
         React.createElement("h1", {className: "logo"}, 
           React.createElement("a", {href: "http://www.appacademy.io/"}, "App Academy")
         )
@@ -111,11 +135,22 @@ var Header = React.createClass({displayName: "Header",
 
 var DesksPairListItem = React.createClass({displayName: "DesksPairListItem",
   render: function() {
+
+    var students = [];
+
+    this.props.students.forEach(function(student, index){
+      students.push(
+        React.createElement("a", {href: "{student.github}"}, student.name)
+      );
+
+      if (this.props.students.length - 1 > index) {
+        students.push(React.createElement("span", null, " & "));
+      }
+    }.bind(this));
+
     return (
       React.createElement("li", null, 
-        React.createElement("strong", null, " 1"), " —", 
-        React.createElement("a", {href: "https://github.com/NickyTesla"}, "Nicky Pyle"), " &", 
-        React.createElement("a", {href: "https://github.com/Faeylayn"}, "Angela Dobbs")
+        React.createElement("strong", null, this.props.desk), " – ", students
       )
     );
   }
@@ -124,9 +159,20 @@ var DesksPairListItem = React.createClass({displayName: "DesksPairListItem",
 
 var DesksPairList = React.createClass({displayName: "DesksPairList",
   render: function() {
+    var pairs = []
+    var desks = Object.getOwnPropertyNames(this.props.pod.pairs);
+
+    desks.forEach(function(desk){
+      pairs.push(
+        React.createElement(DesksPairListItem, {
+          desk: desk, 
+          students: this.props.pod.pairs[desk]})
+      );
+    }.bind(this));
+
     return (
       React.createElement("ul", null, 
-        React.createElement(DesksPairListItem, null)
+        pairs
       )
     );
   }
@@ -135,11 +181,15 @@ var DesksPairList = React.createClass({displayName: "DesksPairList",
 
 var Desks = React.createClass({displayName: "Desks",
   render: function() {
+    var pod = this.props.day.pods[this.props.core.pod.toString()];
+
     return (
       React.createElement("article", {id: "desks"}, 
         React.createElement("span", null, "×"), 
-        React.createElement("h1", null, "W7D3 Desks"), 
-        React.createElement(DesksPairList, null)
+        React.createElement("h1", null, this.props.day.day, " Desks"), 
+        React.createElement("h2", null, pod.name, " — ", pod.instructor), 
+
+        React.createElement(DesksPairList, {pod: pod})
       )
     );
   }
