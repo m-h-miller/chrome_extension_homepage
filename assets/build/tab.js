@@ -1,8 +1,40 @@
-var PageLinksListItem = React.createClass({displayName: "PageLinksListItem",
+var Link = React.createClass({displayName: "Link",
   render: function() {
     return (
+      React.createElement("a", {href: this.props.url}, this.props.title)
+    )
+  }
+});
+
+var PageLinksListItem = React.createClass({displayName: "PageLinksListItem",
+  render: function() {
+    var subLink = this.props.link.sub ? React.createElement(PageLinksSubList, {links: this.props.link.sub}) : null;
+
+    return (
       React.createElement("li", null, 
-        React.createElement("a", {href: "https://github.com/appacademy/ruby-curriculum"}, "Ruby")
+        React.createElement("a", {href: this.props.link.url}, this.props.link.title), 
+        subLink
+      )
+    );
+  }
+});
+
+
+var PageLinksSubList = React.createClass({displayName: "PageLinksSubList",
+  render: function() {
+    var links = [];
+
+    this.props.links.forEach(function(link, index){
+      var key = "link-" + index;
+
+      links.push(
+        React.createElement(PageLinksListItem, {key: key, link: link})
+      )
+    });
+
+    return (
+      React.createElement("ul", null, 
+        links
       )
     );
   }
@@ -13,10 +45,8 @@ var PageLinksList = React.createClass({displayName: "PageLinksList",
   render: function() {
     return (
       React.createElement("section", null, 
-        React.createElement("h2", null, "Curriculum"), 
-        React.createElement("ul", null, 
-          React.createElement(PageLinksListItem, null)
-        )
+        React.createElement("h2", null, this.props.title), 
+        React.createElement(PageLinksSubList, {links: this.props.links})
       )
     );
   }
@@ -25,9 +55,19 @@ var PageLinksList = React.createClass({displayName: "PageLinksList",
 
 var PageLinks = React.createClass({displayName: "PageLinks",
   render: function() {
+    var lists = []
+
+    this.props.links.forEach(function(list, index){
+      var key = "links-list-" + index;
+
+      lists.push(
+        React.createElement(PageLinksList, {key: key, title: list.title, links: list.links})
+      )
+    });
+
     return (
       React.createElement("main", {className: "group"}, 
-        React.createElement(PageLinksList, null)
+        lists
       )
     );
   }
@@ -36,9 +76,13 @@ var PageLinks = React.createClass({displayName: "PageLinks",
 
 var PageHeaderInfo = React.createClass({displayName: "PageHeaderInfo",
   render: function() {
+    var pod = this.props.core.pod.toString();
+    var desk = this.props.core.desk.toString();
+    var pair = this.props.day.pods[pod].pairs[desk];
+
     return (
       React.createElement("div", {id: "info"}, 
-        React.createElement("p", null, "Wed, Mar 4 — W7D3")
+        React.createElement("p", null, this.props.day.dateStamp, " — ", this.props.day.day, " — ", React.createElement(Pair, {pair: pair}))
       )
     );
   }
@@ -46,9 +90,35 @@ var PageHeaderInfo = React.createClass({displayName: "PageHeaderInfo",
 
 
 var PageHeaderClock = React.createClass({displayName: "PageHeaderClock",
+  getInitialState: function() {
+    return {time: "0:00"};
+  },
+
+  componentWillMount: function() {
+    this.interval = null;
+  },
+
+  componentWillUnmount: function() {
+    clearInterval(this.interval);
+  },
+
+  componentDidMount: function() {
+    this.updateTime();
+    this.interval = setInterval(this.updateTime, 10000);
+  },
+
+  updateTime: function() {
+    var currentTime = new Date();
+    var currentHours = currentTime.getHours();
+    var currentMinutes = currentTime.getMinutes();
+    currentMinutes = (currentMinutes < 10 ? "0" : "") + currentMinutes;
+
+    this.setState({time: currentHours + ":" + currentMinutes});
+  },
+
   render: function() {
     return (
-      React.createElement("h1", {id: "clock"}, "15:06")
+      React.createElement("h1", {id: "clock"}, this.state.time)
     );
   }
 });
@@ -56,11 +126,13 @@ var PageHeaderClock = React.createClass({displayName: "PageHeaderClock",
 
 var PageHeader = React.createClass({displayName: "PageHeader",
   render: function() {
+    var desk = this.props.core.desk ? this.props.core.desk : "•";
+
     return (
       React.createElement("header", {className: "clock-wrap"}, 
-        React.createElement("h2", {id: "desk"}, "•"), 
+        React.createElement("h2", {id: "desk"}, desk), 
         React.createElement(PageHeaderClock, null), 
-        React.createElement(PageHeaderInfo, null)
+        React.createElement(PageHeaderInfo, {core: this.props.core, day: this.props.day})
       )
     );
   }
@@ -71,8 +143,8 @@ var Page = React.createClass({displayName: "Page",
   render: function() {
     return (
       React.createElement("div", {className: "wrap"}, 
-        React.createElement(PageHeader, null), 
-        React.createElement(PageLinks, null), 
+        React.createElement(PageHeader, {core: this.props.core, day: this.props.day}), 
+        React.createElement(PageLinks, {ord: this.props.day.ord, links: this.props.links}), 
         React.createElement("h3", {className: "localhost"}, 
           React.createElement("a", {href: "http://localhost:3000/"}, "Localhost:3000")
         )
@@ -81,16 +153,26 @@ var Page = React.createClass({displayName: "Page",
   }
 });
 
+var CornerLink = React.createClass({displayName: "CornerLink",
+  render: function() {
+    return (
+      React.createElement("li", null, 
+        React.createElement("a", {href: this.props.url}, this.props.title)
+      )
+    )
+  }
+})
+
 
 var Corners = React.createClass({displayName: "Corners",
   render: function() {
     var links = [];
 
-    this.props.corners.forEach(function(link){
+    this.props.corners.forEach(function(link, index){
+      var key = "corner-" + index;
+
       links.push(
-        React.createElement("li", null, 
-          React.createElement("a", {href: link.url}, link.title)
-        )
+        React.createElement(CornerLink, {key: key, url: link.url, title: link.title})
       );
     });
 
@@ -113,7 +195,7 @@ var Header = React.createClass({displayName: "Header",
     var degreeFar = parseInt((degreeCel * 9 / 5) + 32);
 
     return (
-      React.createElement("header", {className: "group"}, 
+      React.createElement("header", {className: "header group"}, 
         React.createElement("em", {className: "weather-left"}, 
           city, " / ", this.props.weather.weather[0].main, 
           React.createElement("span", {className: "weather-hidden"}, " — ", this.props.weather.weather[0].description)
@@ -133,24 +215,34 @@ var Header = React.createClass({displayName: "Header",
 });
 
 
-var DesksPairListItem = React.createClass({displayName: "DesksPairListItem",
+var Pair = React.createClass({displayName: "Pair",
   render: function() {
+    var pair = [];
 
-    var students = [];
+    this.props.pair.forEach(function(student, index){
+      var key = "link-" + student.github;
 
-    this.props.students.forEach(function(student, index){
-      students.push(
-        React.createElement("a", {href: "{student.github}"}, student.name)
+      pair.push(
+        React.createElement(Link, {key: key, url: student.github, title: student.name})
       );
 
-      if (this.props.students.length - 1 > index) {
-        students.push(React.createElement("span", null, " & "));
+      if (this.props.pair.length - 1 > index) {
+        pair.push(" & ");
       }
     }.bind(this));
 
     return (
+      React.createElement("span", {className: "pair"}, pair)
+    )
+  }
+})
+
+
+var DesksPairListItem = React.createClass({displayName: "DesksPairListItem",
+  render: function() {
+    return (
       React.createElement("li", null, 
-        React.createElement("strong", null, this.props.desk), " – ", students
+      React.createElement("strong", null, this.props.desk), " — ", React.createElement(Pair, {pair: this.props.pair})
       )
     );
   }
@@ -162,11 +254,14 @@ var DesksPairList = React.createClass({displayName: "DesksPairList",
     var pairs = []
     var desks = Object.getOwnPropertyNames(this.props.pod.pairs);
 
-    desks.forEach(function(desk){
+    desks.forEach(function(desk, index){
+      var key = "pair-" + index;
+
       pairs.push(
         React.createElement(DesksPairListItem, {
+          key: key, 
           desk: desk, 
-          students: this.props.pod.pairs[desk]})
+          pair: this.props.pod.pairs[desk]})
       );
     }.bind(this));
 

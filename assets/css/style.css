@@ -57,14 +57,14 @@ h1, h2 {
   clear: both;
 }
 
-header {
+.header {
   position: relative;
   background: #f00;
   text-align: center;
   z-index: 4;
 }
 
-header em {
+.header em {
   position: absolute;
   top: 0;
   display: block;
@@ -74,19 +74,19 @@ header em {
   font-weight: 400;
 }
 
-header em .weather-hidden {
+.header em .weather-hidden {
   display: none;
 }
 
-header:hover em .weather-hidden {
+.header:hover em .weather-hidden {
   display: inline;
 }
 
-header .weather-left {
+.header .weather-left {
   left: 0;
 }
 
-header .weather-right {
+.header .weather-right {
   right: 0;
 }
 
@@ -200,11 +200,11 @@ nav li:nth-child(4) > a {
   background: #ff0;
 }
 
-#info > p > strong {
+#info > p strong {
   font-weight: 700;
 }
 
-#info > p > a {
+#info > p a {
   font-weight: 700;
   text-decoration: underline;
 }
@@ -297,7 +297,7 @@ section li a:hover {
 }
 
 #desks {
-/*  display: none;*/
+  display: none;
   position: absolute;
   z-index: 6;
   top: 50%;
