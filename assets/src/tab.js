@@ -76,9 +76,13 @@ var PageLinks = React.createClass({
 
 var PageHeaderInfo = React.createClass({
   render: function() {
-    var pod = this.props.core.pod.toString();
-    var desk = this.props.core.desk.toString();
-    var pair = this.props.day.pods[pod].pairs[desk];
+    if(!this.props.core.podId){
+      return (<div id="info"></div>);
+    }
+
+    var podId = this.props.core.podId;
+    var desk = this.props.core.desk;
+    var pair = this.props.day.pods[podId].pairs[desk];
 
     return (
       <div id="info">
@@ -130,7 +134,7 @@ var PageHeader = React.createClass({
 
     return (
       <header className="clock-wrap">
-        <h2 id="desk">{desk}</h2>
+        <h2 id="desk" onClick={this.props.onDeskClick}>{desk}</h2>
         <PageHeaderClock />
         <PageHeaderInfo core={this.props.core} day={this.props.day} />
       </header>
@@ -143,7 +147,7 @@ var Page = React.createClass({
   render: function() {
     return (
       <div className="wrap">
-        <PageHeader core={this.props.core} day={this.props.day} />
+        <PageHeader core={this.props.core} day={this.props.day} onDeskClick={this.props.onDeskClick} />
         <PageLinks ord={this.props.day.ord} links={this.props.links} />
         <h3 className="localhost">
           <a href="http://localhost:3000/">Localhost:3000</a>
@@ -189,6 +193,9 @@ var Corners = React.createClass({
 
 var Header = React.createClass({
   render: function() {
+    if(!this.props.weather.main){
+      return (<header className="header group"></header>);
+    }
 
     var city = this.props.core.cityId == 1 ? "NYC" : "SF";
     var degreeCel = parseInt(this.props.weather.main.temp);
@@ -276,10 +283,15 @@ var DesksPairList = React.createClass({
 
 var Desks = React.createClass({
   render: function() {
-    var pod = this.props.day.pods[this.props.core.pod.toString()];
+    if(!this.props.day.pods || !this.props.core.podId){
+      return (<article id="desks"></article>);
+    }
+
+    var pod = this.props.day.pods[this.props.core.podId];
+    var deskClass = this.props.visible ? "is-active" : "";
 
     return (
-      <article id="desks">
+      <article className={deskClass} id="desks">
         <span>×</span>
         <h1>{this.props.day.day} Desks</h1>
         <h2>{pod.name} — {pod.instructor}</h2>
@@ -290,7 +302,18 @@ var Desks = React.createClass({
   }
 });
 
+
 var Body = React.createClass({
+  getInitialState: function() {
+    return {
+      deskVisible: false
+    };
+  },
+  handleDeskClick: function(event) {
+    this.setState({
+      deskVisible: true
+    });
+  },
   render: function() {
     return (
       <div>
@@ -303,12 +326,14 @@ var Body = React.createClass({
 
         <Desks
           core={this.props.data.core}
-          day={this.props.data.day} />
+          day={this.props.data.day}
+          visible={this.state.deskVisible} />
 
         <Page
           core={this.props.data.core}
           day={this.props.data.day}
-          links={this.props.data.links} />
+          links={this.props.data.links}
+          onDeskClick={this.handleDeskClick} />
 
         <footer>
           <a href="options.html">Options</a>
@@ -318,9 +343,96 @@ var Body = React.createClass({
   }
 });
 
-$(function(){
-  React.render(
-    <Body data={Data} />,
-    document.body
-  );
-});
+
+/* DATA FUNCTIONS */
+
+(function(){
+
+  var stamp = (function(){
+    var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
+                'Thursday', 'Friday', 'Saturday'];
+
+    var months = ['January', 'February', 'March', 'April',
+                  'May', 'June', 'July', 'August', 'September',
+                  'October', 'November', 'December'];
+
+    var dateStamp;
+    var d = new Date();
+    var hours = d.getHours();
+
+    dateStamp = days[d.getDay()].substring(0,3) + ", ";
+    dateStamp += months[d.getMonth()].substring(0,3) + " ";
+    dateStamp += d.getDate();
+
+    return {
+      date: dateStamp,
+      time: dateStamp + ", " + hours
+    };
+  })();
+
+  var getCoreData = function(){
+    var core = Data.core;
+
+    core.cityId = localStorage["cityId"] || 1;
+    core.podId = localStorage["podId"];
+    core.desk = localStorage["desk"];
+    core.password = localStorage["password"];
+  };
+
+  var getWeatherData = function(){
+    var weatherId = (Data.core.cityId == 2) ? 5391959 : 5128581;
+    var url = "http://api.openweathermap.org/data/2.5/weather?id=" + weatherId + "&units=metric";
+
+    Data.weather = JSON.parse(localStorage["weather"] || "{}");
+
+    if(!Data.weather || Data.weather.timeStamp != stamp.time){
+      $.getJSON(url, function(data){
+
+        Data.weather = data;
+        Data.weather.timeStamp = stamp.time;
+        localStorage["weather"] = JSON.stringify(Data.weather);
+
+        renderEverything();
+      });
+    }
+  };
+
+  var getDayData = function(){
+    var url = "http://progress.appacademy.io/api/pairs.json?city_id=" + Data.core.cityId;
+    Data.day = JSON.parse(localStorage["day"] || "{}");
+
+    if(!Data.day || Data.day.dateStamp != stamp.date){
+      $.getJSON(url, function(data){
+
+        Data.day = data;
+        Data.day.dateStamp = stamp.date;
+        localStorage["day"] = JSON.stringify(Data.day);
+
+        if(!Data.core.podId){
+          Data.core.podId = Object.keys(Data.day.pods)[0];
+        }
+
+        if(!Data.core.desk){
+          Data.core.desk = Object.keys(Data.day.pods[Data.core.podId].pairs)[0];
+        }
+
+        renderEverything();
+      });
+    }
+  };
+
+  var renderEverything = function(){
+    React.render(
+      <Body data={Data} />,
+      document.body
+    );
+  };
+
+  $(function(){
+    getCoreData();
+    getWeatherData();
+    getDayData();
+    renderEverything();
+  });
+
+})();

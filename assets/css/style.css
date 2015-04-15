@@ -310,6 +310,10 @@ section li a:hover {
   text-align: left;
 }
 
+#desks.is-active {
+  display: block;
+}
+
 #desks > span {
   display: block;
   position: absolute;
