@@ -6,6 +6,7 @@ var Link = React.createClass({
   }
 });
 
+
 var PageLinksListItem = React.createClass({
   render: function() {
     var subLink = this.props.link.sub ? <PageLinksSubList links={this.props.link.sub} /> : null;
@@ -76,7 +77,7 @@ var PageLinks = React.createClass({
 
 var PageHeaderInfo = React.createClass({
   render: function() {
-    if(!this.props.core.podId){
+    if(!this.props.core.podId || !this.props.day.pods){
       return (<div id="info"></div>);
     }
 
@@ -292,9 +293,9 @@ var Desks = React.createClass({
 
     return (
       <article className={deskClass} id="desks">
-        <span>×</span>
+        <span onClick={this.props.onDeskClick}>×</span>
         <h1>{this.props.day.day} Desks</h1>
-        <h2>{pod.name} — {pod.instructor}</h2>
+        <h2>{pod.name} {pod.instructor ? "—" : ""} {pod.instructor}</h2>
 
         <DesksPairList pod={pod} />
       </article>
@@ -304,35 +305,70 @@ var Desks = React.createClass({
 
 
 var Body = React.createClass({
+  getWeather: function(){
+    var weatherId = (this.props.core.cityId == 2) ? 5391959 : 5128581;
+    var url = "http://api.openweathermap.org/data/2.5/weather?id=" + weatherId + "&units=metric";
+    var weather = JSON.parse(localStorage["weather"] || "{}");
+
+    if(!weather || weather.timeStamp != this.props.stamp.time){
+      $.getJSON(url, function(data){
+        data.timeStamp = this.props.stamp.time;
+
+        localStorage["weather"] = JSON.stringify(data);
+        this.setState({weather: data});
+      }.bind(this));
+    }
+
+    return weather;
+  },
+  getDay: function(){
+    var url = "http://progress.appacademy.io/api/pairs.json?city_id=" + this.props.core.cityId;
+    var day = JSON.parse(localStorage["day"] || "{}");
+
+    if(!day || day.dateStamp != this.props.stamp.date){
+      $.getJSON(url, function(data){
+        data.dateStamp = this.props.stamp.date;
+        localStorage["day"] = JSON.stringify(data);
+
+        this.setState({day: data});
+      }.bind(this));
+    }
+
+    return day;
+  },
   getInitialState: function() {
     return {
+      weather: this.getWeather(),
+      day: this.getDay(),
       deskVisible: false
     };
   },
   handleDeskClick: function(event) {
     this.setState({
-      deskVisible: true
+      deskVisible: !this.state.deskVisible
     });
   },
   render: function() {
+
     return (
       <div>
         <Header
-          core={this.props.data.core}
-          weather={this.props.data.weather} />
+          core={this.props.core}
+          weather={this.state.weather} />
 
         <Corners
-          corners={this.props.data.corners} />
+          corners={this.props.links.corners} />
 
         <Desks
-          core={this.props.data.core}
-          day={this.props.data.day}
-          visible={this.state.deskVisible} />
+          core={this.props.core}
+          day={this.state.day}
+          visible={this.state.deskVisible}
+          onDeskClick={this.handleDeskClick} />
 
         <Page
-          core={this.props.data.core}
-          day={this.props.data.day}
-          links={this.props.data.links}
+          core={this.props.core}
+          day={this.state.day}
+          links={this.props.links.main}
           onDeskClick={this.handleDeskClick} />
 
         <footer>
@@ -343,12 +379,9 @@ var Body = React.createClass({
   }
 });
 
+$(function(){
 
-/* DATA FUNCTIONS */
-
-(function(){
-
-  var stamp = (function(){
+  var Stamp = (function(){
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
                 'Thursday', 'Friday', 'Saturday'];
 
@@ -370,69 +403,16 @@ var Body = React.createClass({
     };
   })();
 
-  var getCoreData = function(){
-    var core = Data.core;
-
-    core.cityId = localStorage["cityId"] || 1;
-    core.podId = localStorage["podId"];
-    core.desk = localStorage["desk"];
-    core.password = localStorage["password"];
+  var Core = {
+    cityId: localStorage["cityId"] || 1,
+    podId: localStorage["podId"] || 1,
+    desk: localStorage["desk"] || 1,
+    password: localStorage["password"]
   };
 
-  var getWeatherData = function(){
-    var weatherId = (Data.core.cityId == 2) ? 5391959 : 5128581;
-    var url = "http://api.openweathermap.org/data/2.5/weather?id=" + weatherId + "&units=metric";
+  React.render(
+    <Body core={Core} stamp={Stamp} links={Links} />,
+    document.body
+  );
 
-    Data.weather = JSON.parse(localStorage["weather"] || "{}");
-
-    if(!Data.weather || Data.weather.timeStamp != stamp.time){
-      $.getJSON(url, function(data){
-
-        Data.weather = data;
-        Data.weather.timeStamp = stamp.time;
-        localStorage["weather"] = JSON.stringify(Data.weather);
-
-        renderEverything();
-      });
-    }
-  };
-
-  var getDayData = function(){
-    var url = "http://progress.appacademy.io/api/pairs.json?city_id=" + Data.core.cityId;
-    Data.day = JSON.parse(localStorage["day"] || "{}");
-
-    if(!Data.day || Data.day.dateStamp != stamp.date){
-      $.getJSON(url, function(data){
-
-        Data.day = data;
-        Data.day.dateStamp = stamp.date;
-        localStorage["day"] = JSON.stringify(Data.day);
-
-        if(!Data.core.podId){
-          Data.core.podId = Object.keys(Data.day.pods)[0];
-        }
-
-        if(!Data.core.desk){
-          Data.core.desk = Object.keys(Data.day.pods[Data.core.podId].pairs)[0];
-        }
-
-        renderEverything();
-      });
-    }
-  };
-
-  var renderEverything = function(){
-    React.render(
-      <Body data={Data} />,
-      document.body
-    );
-  };
-
-  $(function(){
-    getCoreData();
-    getWeatherData();
-    getDayData();
-    renderEverything();
-  });
-
-})();
+});
