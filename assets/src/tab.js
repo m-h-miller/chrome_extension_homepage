@@ -77,17 +77,20 @@ var PageLinks = React.createClass({
 
 var PageHeaderInfo = React.createClass({
   render: function() {
-    if(!this.props.core.podId || !this.props.day.pods){
-      return (<div id="info"></div>);
-    }
+    var pods = this.props.day.pods;
+    var pod = pods && pods[this.props.podId];
+    var pair = pod && pod.pairs[this.props.desk];
+    var pairComponent;
 
-    var podId = this.props.core.podId;
-    var desk = this.props.core.desk;
-    var pair = this.props.day.pods[podId].pairs[desk];
+    if(pair){
+      pairComponent = (
+        <Pair pair={pair} />
+      );
+    }
 
     return (
       <div id="info">
-        <p>{this.props.day.dateStamp} — {this.props.day.day} — <Pair pair={pair} /></p>
+        <p>{this.props.day.dateStamp} — {this.props.day.day} {pair ? "—" : ""} {pairComponent}</p>
       </div>
     );
   }
@@ -131,13 +134,16 @@ var PageHeaderClock = React.createClass({
 
 var PageHeader = React.createClass({
   render: function() {
-    var desk = this.props.core.desk ? this.props.core.desk : "•";
+    var desk = this.props.desk ? this.props.desk : "•";
 
     return (
       <header className="clock-wrap">
         <h2 id="desk" onClick={this.props.onDeskClick}>{desk}</h2>
         <PageHeaderClock />
-        <PageHeaderInfo core={this.props.core} day={this.props.day} />
+        <PageHeaderInfo
+          desk={this.props.desk}
+          podId={this.props.desk}
+          day={this.props.day} />
       </header>
     );
   }
@@ -148,7 +154,12 @@ var Page = React.createClass({
   render: function() {
     return (
       <div className="wrap">
-        <PageHeader core={this.props.core} day={this.props.day} onDeskClick={this.props.onDeskClick} />
+        <PageHeader
+          desk={this.props.desk}
+          podId={this.props.podId}
+          day={this.props.day}
+          onDeskClick={this.props.onDeskClick} />
+
         <PageLinks ord={this.props.day.ord} links={this.props.links} />
         <h3 className="localhost">
           <a href="http://localhost:3000/">Localhost:3000</a>
@@ -194,25 +205,32 @@ var Corners = React.createClass({
 
 var Header = React.createClass({
   render: function() {
-    if(!this.props.weather.main){
-      return (<header className="header group"></header>);
-    }
+    var city = this.props.cityId == 1 ? "NYC" : "SF";
+    var weatherLeft, weatherRight;
 
-    var city = this.props.core.cityId == 1 ? "NYC" : "SF";
-    var degreeCel = parseInt(this.props.weather.main.temp);
-    var degreeFar = parseInt((degreeCel * 9 / 5) + 32);
+    if(this.props.weather.main){
+      var degreeCel = parseInt(this.props.weather.main.temp);
+      var degreeFar = parseInt((degreeCel * 9 / 5) + 32);
 
-    return (
-      <header className="header group">
+      weatherLeft = (
         <em className="weather-left">
           {city} / {this.props.weather.weather[0].main}
           <span className="weather-hidden"> — {this.props.weather.weather[0].description}</span>
         </em>
+      );
 
+      weatherRight = (
         <em className="weather-right">
           <span className="weather-hidden">{degreeFar} &deg; F / </span>
           {degreeCel} &deg; C
         </em>
+      );
+    }
+
+    return (
+      <header className="header group">
+        {weatherLeft}
+        {weatherRight}
 
         <h1 className="logo">
           <a href="http://www.appacademy.io/">App Academy</a>
@@ -284,20 +302,27 @@ var DesksPairList = React.createClass({
 
 var Desks = React.createClass({
   render: function() {
-    if(!this.props.day.pods || !this.props.core.podId){
-      return (<article id="desks"></article>);
-    }
-
-    var pod = this.props.day.pods[this.props.core.podId];
+    var pods = this.props.day.pods;
+    var pod = pods && pods[this.props.podId];
     var deskClass = this.props.visible ? "is-active" : "";
+    var podName, podDeskPairList;
+
+    if(pod){
+      podName = (
+        <h2>{pod.name} {pod.instructor ? "—" : ""} {pod.instructor}</h2>
+      );
+
+      podDeskPairList = (
+        <DesksPairList pod={pod} />
+      );
+    }
 
     return (
       <article className={deskClass} id="desks">
         <span onClick={this.props.onDeskClick}>×</span>
         <h1>{this.props.day.day} Desks</h1>
-        <h2>{pod.name} {pod.instructor ? "—" : ""} {pod.instructor}</h2>
-
-        <DesksPairList pod={pod} />
+        {podName}
+        {podDeskPairList}
       </article>
     );
   }
@@ -305,8 +330,11 @@ var Desks = React.createClass({
 
 
 var Body = React.createClass({
+  getCityId: function(){
+    return ((this.state && this.state.cityId) || localStorage["cityId"] || 1);
+  },
   getWeather: function(){
-    var weatherId = (this.props.core.cityId == 2) ? 5391959 : 5128581;
+    var weatherId = (this.getCityId() == 2) ? 5391959 : 5128581;
     var url = "http://api.openweathermap.org/data/2.5/weather?id=" + weatherId + "&units=metric";
     var weather = JSON.parse(localStorage["weather"] || "{}");
 
@@ -322,13 +350,19 @@ var Body = React.createClass({
     return weather;
   },
   getDay: function(){
-    var url = "http://progress.appacademy.io/api/pairs.json?city_id=" + this.props.core.cityId;
+    var url = "http://progress.appacademy.io/api/pairs.json?city_id=" + this.getCityId();
     var day = JSON.parse(localStorage["day"] || "{}");
 
     if(!day || day.dateStamp != this.props.stamp.date){
       $.getJSON(url, function(data){
         data.dateStamp = this.props.stamp.date;
         localStorage["day"] = JSON.stringify(data);
+
+        if(!this.state.podId || !data.pods[this.state.podId]){
+          var podId = Object.keys(data.pods)[0];
+          localStorage["podId"] = podId;
+          this.setState({podId: podId});
+        }
 
         this.setState({day: data});
       }.bind(this));
@@ -338,6 +372,9 @@ var Body = React.createClass({
   },
   getInitialState: function() {
     return {
+      cityId: localStorage["cityId"],
+      podId: localStorage["podId"],
+      desk: localStorage["desk"],
       weather: this.getWeather(),
       day: this.getDay(),
       deskVisible: false
@@ -349,24 +386,24 @@ var Body = React.createClass({
     });
   },
   render: function() {
-
     return (
       <div>
         <Header
-          core={this.props.core}
+          cityId={this.state.cityId}
           weather={this.state.weather} />
 
         <Corners
           corners={this.props.links.corners} />
 
         <Desks
-          core={this.props.core}
+          podId={this.state.podId}
           day={this.state.day}
           visible={this.state.deskVisible}
           onDeskClick={this.handleDeskClick} />
 
         <Page
-          core={this.props.core}
+          desk={this.state.desk}
+          podId={this.state.podId}
           day={this.state.day}
           links={this.props.links.main}
           onDeskClick={this.handleDeskClick} />
@@ -403,15 +440,10 @@ $(function(){
     };
   })();
 
-  var Core = {
-    cityId: localStorage["cityId"] || 1,
-    podId: localStorage["podId"] || 1,
-    desk: localStorage["desk"] || 1,
-    password: localStorage["password"]
-  };
-
   React.render(
-    <Body core={Core} stamp={Stamp} links={Links} />,
+    <Body
+      stamp={Stamp}
+      links={Links} />,
     document.body
   );
 

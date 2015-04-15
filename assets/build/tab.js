@@ -77,17 +77,20 @@ var PageLinks = React.createClass({displayName: "PageLinks",
 
 var PageHeaderInfo = React.createClass({displayName: "PageHeaderInfo",
   render: function() {
-    if(!this.props.core.podId || !this.props.day.pods){
-      return (React.createElement("div", {id: "info"}));
-    }
+    var pods = this.props.day.pods;
+    var pod = pods && pods[this.props.podId];
+    var pair = pod && pod.pairs[this.props.desk];
+    var pairComponent;
 
-    var podId = this.props.core.podId;
-    var desk = this.props.core.desk;
-    var pair = this.props.day.pods[podId].pairs[desk];
+    if(pair){
+      pairComponent = (
+        React.createElement(Pair, {pair: pair})
+      );
+    }
 
     return (
       React.createElement("div", {id: "info"},
-        React.createElement("p", null, this.props.day.dateStamp, " — ", this.props.day.day, " — ", React.createElement(Pair, {pair: pair}))
+        React.createElement("p", null, this.props.day.dateStamp, " — ", this.props.day.day, " ", pair ? "—" : "", " ", pairComponent)
       )
     );
   }
@@ -131,13 +134,16 @@ var PageHeaderClock = React.createClass({displayName: "PageHeaderClock",
 
 var PageHeader = React.createClass({displayName: "PageHeader",
   render: function() {
-    var desk = this.props.core.desk ? this.props.core.desk : "•";
+    var desk = this.props.desk ? this.props.desk : "•";
 
     return (
       React.createElement("header", {className: "clock-wrap"},
         React.createElement("h2", {id: "desk", onClick: this.props.onDeskClick}, desk),
         React.createElement(PageHeaderClock, null),
-        React.createElement(PageHeaderInfo, {core: this.props.core, day: this.props.day})
+        React.createElement(PageHeaderInfo, {
+          desk: this.props.desk,
+          podId: this.props.desk,
+          day: this.props.day})
       )
     );
   }
@@ -148,7 +154,12 @@ var Page = React.createClass({displayName: "Page",
   render: function() {
     return (
       React.createElement("div", {className: "wrap"},
-        React.createElement(PageHeader, {core: this.props.core, day: this.props.day, onDeskClick: this.props.onDeskClick}),
+        React.createElement(PageHeader, {
+          desk: this.props.desk,
+          podId: this.props.podId,
+          day: this.props.day,
+          onDeskClick: this.props.onDeskClick}),
+
         React.createElement(PageLinks, {ord: this.props.day.ord, links: this.props.links}),
         React.createElement("h3", {className: "localhost"},
           React.createElement("a", {href: "http://localhost:3000/"}, "Localhost:3000")
@@ -194,25 +205,32 @@ var Corners = React.createClass({displayName: "Corners",
 
 var Header = React.createClass({displayName: "Header",
   render: function() {
-    if(!this.props.weather.main){
-      return (React.createElement("header", {className: "header group"}));
-    }
+    var city = this.props.cityId == 1 ? "NYC" : "SF";
+    var weatherLeft, weatherRight;
 
-    var city = this.props.core.cityId == 1 ? "NYC" : "SF";
-    var degreeCel = parseInt(this.props.weather.main.temp);
-    var degreeFar = parseInt((degreeCel * 9 / 5) + 32);
+    if(this.props.weather.main){
+      var degreeCel = parseInt(this.props.weather.main.temp);
+      var degreeFar = parseInt((degreeCel * 9 / 5) + 32);
 
-    return (
-      React.createElement("header", {className: "header group"},
+      weatherLeft = (
         React.createElement("em", {className: "weather-left"},
           city, " / ", this.props.weather.weather[0].main,
           React.createElement("span", {className: "weather-hidden"}, " — ", this.props.weather.weather[0].description)
-        ),
+        )
+      );
 
+      weatherRight = (
         React.createElement("em", {className: "weather-right"},
           React.createElement("span", {className: "weather-hidden"}, degreeFar, " ° F / "),
           degreeCel, " ° C"
-        ),
+        )
+      );
+    }
+
+    return (
+      React.createElement("header", {className: "header group"},
+        weatherLeft,
+        weatherRight,
 
         React.createElement("h1", {className: "logo"},
           React.createElement("a", {href: "http://www.appacademy.io/"}, "App Academy")
@@ -284,20 +302,27 @@ var DesksPairList = React.createClass({displayName: "DesksPairList",
 
 var Desks = React.createClass({displayName: "Desks",
   render: function() {
-    if(!this.props.day.pods || !this.props.core.podId){
-      return (React.createElement("article", {id: "desks"}));
-    }
-
-    var pod = this.props.day.pods[this.props.core.podId];
+    var pods = this.props.day.pods;
+    var pod = pods && pods[this.props.podId];
     var deskClass = this.props.visible ? "is-active" : "";
+    var podName, podDeskPairList;
+
+    if(pod){
+      podName = (
+        React.createElement("h2", null, pod.name, " ", pod.instructor ? "—" : "", " ", pod.instructor)
+      );
+
+      podDeskPairList = (
+        React.createElement(DesksPairList, {pod: pod})
+      );
+    }
 
     return (
       React.createElement("article", {className: deskClass, id: "desks"},
         React.createElement("span", {onClick: this.props.onDeskClick}, "×"),
         React.createElement("h1", null, this.props.day.day, " Desks"),
-        React.createElement("h2", null, pod.name, " ", pod.instructor ? "—" : "", " ", pod.instructor),
-
-        React.createElement(DesksPairList, {pod: pod})
+        podName,
+        podDeskPairList
       )
     );
   }
@@ -305,8 +330,11 @@ var Desks = React.createClass({displayName: "Desks",
 
 
 var Body = React.createClass({displayName: "Body",
+  getCityId: function(){
+    return ((this.state && this.state.cityId) || localStorage["cityId"] || 1);
+  },
   getWeather: function(){
-    var weatherId = (this.props.core.cityId == 2) ? 5391959 : 5128581;
+    var weatherId = (this.getCityId() == 2) ? 5391959 : 5128581;
     var url = "http://api.openweathermap.org/data/2.5/weather?id=" + weatherId + "&units=metric";
     var weather = JSON.parse(localStorage["weather"] || "{}");
 
@@ -322,13 +350,19 @@ var Body = React.createClass({displayName: "Body",
     return weather;
   },
   getDay: function(){
-    var url = "http://progress.appacademy.io/api/pairs.json?city_id=" + this.props.core.cityId;
+    var url = "http://progress.appacademy.io/api/pairs.json?city_id=" + this.getCityId();
     var day = JSON.parse(localStorage["day"] || "{}");
 
     if(!day || day.dateStamp != this.props.stamp.date){
       $.getJSON(url, function(data){
         data.dateStamp = this.props.stamp.date;
         localStorage["day"] = JSON.stringify(data);
+
+        if(!this.state.podId || !data.pods[this.state.podId]){
+          var podId = Object.keys(data.pods)[0];
+          localStorage["podId"] = podId;
+          this.setState({podId: podId});
+        }
 
         this.setState({day: data});
       }.bind(this));
@@ -338,6 +372,9 @@ var Body = React.createClass({displayName: "Body",
   },
   getInitialState: function() {
     return {
+      cityId: localStorage["cityId"],
+      podId: localStorage["podId"],
+      desk: localStorage["desk"],
       weather: this.getWeather(),
       day: this.getDay(),
       deskVisible: false
@@ -349,24 +386,24 @@ var Body = React.createClass({displayName: "Body",
     });
   },
   render: function() {
-
     return (
       React.createElement("div", null,
         React.createElement(Header, {
-          core: this.props.core,
+          cityId: this.state.cityId,
           weather: this.state.weather}),
 
         React.createElement(Corners, {
           corners: this.props.links.corners}),
 
         React.createElement(Desks, {
-          core: this.props.core,
+          podId: this.state.podId,
           day: this.state.day,
           visible: this.state.deskVisible,
           onDeskClick: this.handleDeskClick}),
 
         React.createElement(Page, {
-          core: this.props.core,
+          desk: this.state.desk,
+          podId: this.state.podId,
           day: this.state.day,
           links: this.props.links.main,
           onDeskClick: this.handleDeskClick}),
@@ -403,15 +440,10 @@ $(function(){
     };
   })();
 
-  var Core = {
-    cityId: localStorage["cityId"] || 1,
-    podId: localStorage["podId"] || 1,
-    desk: localStorage["desk"] || 1,
-    password: localStorage["password"]
-  };
-
   React.render(
-    React.createElement(Body, {core: Core, stamp: Stamp, links: Links}),
+    React.createElement(Body, {
+      stamp: Stamp,
+      links: Links}),
     document.body
   );
 
