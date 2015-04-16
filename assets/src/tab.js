@@ -90,7 +90,7 @@ var PageHeaderInfo = React.createClass({
 
     return (
       <div id="info">
-        <p>{this.props.day.dateStamp} — {this.props.day.day} {pair ? "—" : ""} {pairComponent}</p>
+        <p>{this.props.day.dateStamp} — {this.props.day.day} {pair && "—"} {pairComponent}</p>
       </div>
     );
   }
@@ -142,7 +142,7 @@ var PageHeader = React.createClass({
         <PageHeaderClock />
         <PageHeaderInfo
           desk={this.props.desk}
-          podId={this.props.desk}
+          podId={this.props.podId}
           day={this.props.day} />
       </header>
     );
@@ -309,7 +309,7 @@ var Desks = React.createClass({
 
     if(pod){
       podName = (
-        <h2>{pod.name} {pod.instructor ? "—" : ""} {pod.instructor}</h2>
+        <h2>{pod.name} {pod.instructor && "—"} {pod.instructor}</h2>
       );
 
       podDeskPairList = (
@@ -330,9 +330,7 @@ var Desks = React.createClass({
 
 
 var Body = React.createClass({
-  getCityId: function(){
-    return ((this.state && this.state.cityId) || localStorage["cityId"] || 1);
-  },
+  mixins: [CityMixin],
   getWeather: function(){
     var weatherId = (this.getCityId() == 2) ? 5391959 : 5128581;
     var url = "http://api.openweathermap.org/data/2.5/weather?id=" + weatherId + "&units=metric";
@@ -369,6 +367,9 @@ var Body = React.createClass({
     }
 
     return day;
+  },
+  componentDidMount: function() {
+    this.getCityByIP();
   },
   getInitialState: function() {
     return {

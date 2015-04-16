@@ -1,13 +1,12 @@
-// SF: 37.7833 N, 122.4167 W
-// NYC: 40.6700 N, 73.9400 W
-
 var Form = React.createClass({
+  mixins: [CityMixin],
   componentDidMount: function(){
     localStorage.removeItem("day");
     localStorage.removeItem("weather");
 
-    this.getCityByIP();
-    this.loadRemotePods();
+    this.getCityByIP(function(){
+      this.loadRemotePods();
+    });
   },
   getInitialState: function(){
     return {
@@ -37,33 +36,6 @@ var Form = React.createClass({
       this.setState({"pods": this.getPods(data)});
     }.bind(this));
   },
-  getCityByIP: function(){
-    if(localStorage["cityId"] || (this.state && this.state.cityId)){
-      return;
-    };
-
-    var sfLong = -122;
-    var nycLong = -74;
-    var midLong = parseInt((sfLong + nycLong) / 2);
-
-    $.getJSON("http://ipinfo.io/json", function(data) {
-        var long = parseInt(data.loc.split(",")[1]);
-        this.setCityId((long > midLong) ? 1 : 2);
-    }.bind(this));
-  },
-  setCityId: function(cityId){
-    localStorage["cityId"] = cityId;
-    localStorage["podId"] = "";
-
-    this.setState({
-      cityId: cityId,
-      podId: ""
-    },
-    function(){
-      this.loadRemotePods();
-      this.flashInfo();
-    });
-  },
   flashInfo: function(){
     this.setState({saved: true});
 
@@ -80,15 +52,21 @@ var Form = React.createClass({
     localStorage["desk"] = desk;
     this.setState({desk: desk});
     this.flashInfo();
+    this.setDeskHash();
   },
   handlePasswordChange: function(event){
     var password = event.target.value;
     localStorage["password"] = password;
     this.setState({desk: password});
     this.flashInfo();
+    this.setDeskHash();
   },
   handleLocationChange: function(event){
-    this.setCityId(event.target.value);
+    this.setCityId(event.target.value, function(){
+      this.loadRemotePods();
+      this.flashInfo();
+      this.setDeskHash();
+    });
   },
   handlePodChange: function(event){
     var podId = event.target.value;
@@ -96,8 +74,18 @@ var Form = React.createClass({
     this.setState({podId: podId});
     this.flashInfo();
   },
+  setDeskHash: function(){
+    var deskRecipe = "";
+
+    ["cityId", "desk", "password"].forEach(function(key){
+      deskRecipe += localStorage[key];
+    });
+
+    var deskHash = sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash(deskRecipe));
+    chrome.storage.local.set({deskHash: deskHash});
+  },
   render: function(){
-    var info = this.state.saved ? <p>Settings saved!</p> : "";
+    var info = this.state.saved && (<p>Settings saved!</p>);
     var podOptions = [];
 
     if(this.state.cityId && this.state.pods){
@@ -159,7 +147,7 @@ var Form = React.createClass({
             type="password"
             value={this.state.password}
             id="input-password"
-            onChange={this.handleDeskChange} />
+            onChange={this.handlePasswordChange} />
         </div>
 
       </form>

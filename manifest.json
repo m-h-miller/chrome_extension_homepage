@@ -1,8 +1,8 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "App Academy Chrome Tab",
   "description": "Replace default tab page in Chrome with App Academy links.",
-  "version": "1.0",
+  "version": "2.0",
   "chrome_url_overrides" : {
     "newtab": "tab.html"
   },
@@ -10,7 +10,7 @@
   "content_scripts": [
     {
       "matches": ["*://aa-progress-tracker.herokuapp.com/*", "*://*.appacademy.io/*", "*://progress.dev/*"],
-      "js": ["assets/vendor/jquery.js", "assets/vendor/sjcl.js", "assets/build/tools.js"]
+      "js": ["assets/vendor/jquery.js", "assets/build/tools.js"]
     }
   ],
   "options_page": "options.html"

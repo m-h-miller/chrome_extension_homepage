@@ -12,8 +12,8 @@ var PageLinksListItem = React.createClass({displayName: "PageLinksListItem",
     var subLink = this.props.link.sub ? React.createElement(PageLinksSubList, {links: this.props.link.sub}) : null;
 
     return (
-      React.createElement("li", null,
-        React.createElement("a", {href: this.props.link.url}, this.props.link.title),
+      React.createElement("li", null, 
+        React.createElement("a", {href: this.props.link.url}, this.props.link.title), 
         subLink
       )
     );
@@ -34,7 +34,7 @@ var PageLinksSubList = React.createClass({displayName: "PageLinksSubList",
     });
 
     return (
-      React.createElement("ul", null,
+      React.createElement("ul", null, 
         links
       )
     );
@@ -45,8 +45,8 @@ var PageLinksSubList = React.createClass({displayName: "PageLinksSubList",
 var PageLinksList = React.createClass({displayName: "PageLinksList",
   render: function() {
     return (
-      React.createElement("section", null,
-        React.createElement("h2", null, this.props.title),
+      React.createElement("section", null, 
+        React.createElement("h2", null, this.props.title), 
         React.createElement(PageLinksSubList, {links: this.props.links})
       )
     );
@@ -67,7 +67,7 @@ var PageLinks = React.createClass({displayName: "PageLinks",
     });
 
     return (
-      React.createElement("main", {className: "group"},
+      React.createElement("main", {className: "group"}, 
         lists
       )
     );
@@ -89,8 +89,8 @@ var PageHeaderInfo = React.createClass({displayName: "PageHeaderInfo",
     }
 
     return (
-      React.createElement("div", {id: "info"},
-        React.createElement("p", null, this.props.day.dateStamp, " — ", this.props.day.day, " ", pair ? "—" : "", " ", pairComponent)
+      React.createElement("div", {id: "info"}, 
+        React.createElement("p", null, this.props.day.dateStamp, " — ", this.props.day.day, " ", pair && "—", " ", pairComponent)
       )
     );
   }
@@ -137,12 +137,12 @@ var PageHeader = React.createClass({displayName: "PageHeader",
     var desk = this.props.desk ? this.props.desk : "•";
 
     return (
-      React.createElement("header", {className: "clock-wrap"},
-        React.createElement("h2", {id: "desk", onClick: this.props.onDeskClick}, desk),
-        React.createElement(PageHeaderClock, null),
+      React.createElement("header", {className: "clock-wrap"}, 
+        React.createElement("h2", {id: "desk", onClick: this.props.onDeskClick}, desk), 
+        React.createElement(PageHeaderClock, null), 
         React.createElement(PageHeaderInfo, {
-          desk: this.props.desk,
-          podId: this.props.desk,
+          desk: this.props.desk, 
+          podId: this.props.podId, 
           day: this.props.day})
       )
     );
@@ -153,15 +153,15 @@ var PageHeader = React.createClass({displayName: "PageHeader",
 var Page = React.createClass({displayName: "Page",
   render: function() {
     return (
-      React.createElement("div", {className: "wrap"},
+      React.createElement("div", {className: "wrap"}, 
         React.createElement(PageHeader, {
-          desk: this.props.desk,
-          podId: this.props.podId,
-          day: this.props.day,
-          onDeskClick: this.props.onDeskClick}),
+          desk: this.props.desk, 
+          podId: this.props.podId, 
+          day: this.props.day, 
+          onDeskClick: this.props.onDeskClick}), 
 
-        React.createElement(PageLinks, {ord: this.props.day.ord, links: this.props.links}),
-        React.createElement("h3", {className: "localhost"},
+        React.createElement(PageLinks, {ord: this.props.day.ord, links: this.props.links}), 
+        React.createElement("h3", {className: "localhost"}, 
           React.createElement("a", {href: "http://localhost:3000/"}, "Localhost:3000")
         )
       )
@@ -172,7 +172,7 @@ var Page = React.createClass({displayName: "Page",
 var CornerLink = React.createClass({displayName: "CornerLink",
   render: function() {
     return (
-      React.createElement("li", null,
+      React.createElement("li", null, 
         React.createElement("a", {href: this.props.url}, this.props.title)
       )
     )
@@ -193,8 +193,8 @@ var Corners = React.createClass({displayName: "Corners",
     });
 
     return (
-      React.createElement("nav", null,
-        React.createElement("ul", null,
+      React.createElement("nav", null, 
+        React.createElement("ul", null, 
           links
         )
       )
@@ -213,26 +213,26 @@ var Header = React.createClass({displayName: "Header",
       var degreeFar = parseInt((degreeCel * 9 / 5) + 32);
 
       weatherLeft = (
-        React.createElement("em", {className: "weather-left"},
-          city, " / ", this.props.weather.weather[0].main,
+        React.createElement("em", {className: "weather-left"}, 
+          city, " / ", this.props.weather.weather[0].main, 
           React.createElement("span", {className: "weather-hidden"}, " — ", this.props.weather.weather[0].description)
         )
       );
 
       weatherRight = (
-        React.createElement("em", {className: "weather-right"},
-          React.createElement("span", {className: "weather-hidden"}, degreeFar, " ° F / "),
+        React.createElement("em", {className: "weather-right"}, 
+          React.createElement("span", {className: "weather-hidden"}, degreeFar, " ° F / "), 
           degreeCel, " ° C"
         )
       );
     }
 
     return (
-      React.createElement("header", {className: "header group"},
-        weatherLeft,
-        weatherRight,
+      React.createElement("header", {className: "header group"}, 
+        weatherLeft, 
+        weatherRight, 
 
-        React.createElement("h1", {className: "logo"},
+        React.createElement("h1", {className: "logo"}, 
           React.createElement("a", {href: "http://www.appacademy.io/"}, "App Academy")
         )
       )
@@ -267,7 +267,7 @@ var Pair = React.createClass({displayName: "Pair",
 var DesksPairListItem = React.createClass({displayName: "DesksPairListItem",
   render: function() {
     return (
-      React.createElement("li", null,
+      React.createElement("li", null, 
       React.createElement("strong", null, this.props.desk), " — ", React.createElement(Pair, {pair: this.props.pair})
       )
     );
@@ -285,14 +285,14 @@ var DesksPairList = React.createClass({displayName: "DesksPairList",
 
       pairs.push(
         React.createElement(DesksPairListItem, {
-          key: key,
-          desk: desk,
+          key: key, 
+          desk: desk, 
           pair: this.props.pod.pairs[desk]})
       );
     }.bind(this));
 
     return (
-      React.createElement("ul", null,
+      React.createElement("ul", null, 
         pairs
       )
     );
@@ -309,7 +309,7 @@ var Desks = React.createClass({displayName: "Desks",
 
     if(pod){
       podName = (
-        React.createElement("h2", null, pod.name, " ", pod.instructor ? "—" : "", " ", pod.instructor)
+        React.createElement("h2", null, pod.name, " ", pod.instructor && "—", " ", pod.instructor)
       );
 
       podDeskPairList = (
@@ -318,10 +318,10 @@ var Desks = React.createClass({displayName: "Desks",
     }
 
     return (
-      React.createElement("article", {className: deskClass, id: "desks"},
-        React.createElement("span", {onClick: this.props.onDeskClick}, "×"),
-        React.createElement("h1", null, this.props.day.day, " Desks"),
-        podName,
+      React.createElement("article", {className: deskClass, id: "desks"}, 
+        React.createElement("span", {onClick: this.props.onDeskClick}, "×"), 
+        React.createElement("h1", null, this.props.day.day, " Desks"), 
+        podName, 
         podDeskPairList
       )
     );
@@ -330,9 +330,7 @@ var Desks = React.createClass({displayName: "Desks",
 
 
 var Body = React.createClass({displayName: "Body",
-  getCityId: function(){
-    return ((this.state && this.state.cityId) || localStorage["cityId"] || 1);
-  },
+  mixins: [CityMixin],
   getWeather: function(){
     var weatherId = (this.getCityId() == 2) ? 5391959 : 5128581;
     var url = "http://api.openweathermap.org/data/2.5/weather?id=" + weatherId + "&units=metric";
@@ -370,6 +368,9 @@ var Body = React.createClass({displayName: "Body",
 
     return day;
   },
+  componentDidMount: function() {
+    this.getCityByIP();
+  },
   getInitialState: function() {
     return {
       cityId: localStorage["cityId"],
@@ -387,28 +388,28 @@ var Body = React.createClass({displayName: "Body",
   },
   render: function() {
     return (
-      React.createElement("div", null,
+      React.createElement("div", null, 
         React.createElement(Header, {
-          cityId: this.state.cityId,
-          weather: this.state.weather}),
+          cityId: this.state.cityId, 
+          weather: this.state.weather}), 
 
         React.createElement(Corners, {
-          corners: this.props.links.corners}),
+          corners: this.props.links.corners}), 
 
         React.createElement(Desks, {
-          podId: this.state.podId,
-          day: this.state.day,
-          visible: this.state.deskVisible,
-          onDeskClick: this.handleDeskClick}),
+          podId: this.state.podId, 
+          day: this.state.day, 
+          visible: this.state.deskVisible, 
+          onDeskClick: this.handleDeskClick}), 
 
         React.createElement(Page, {
-          desk: this.state.desk,
-          podId: this.state.podId,
-          day: this.state.day,
-          links: this.props.links.main,
-          onDeskClick: this.handleDeskClick}),
+          desk: this.state.desk, 
+          podId: this.state.podId, 
+          day: this.state.day, 
+          links: this.props.links.main, 
+          onDeskClick: this.handleDeskClick}), 
 
-        React.createElement("footer", null,
+        React.createElement("footer", null, 
           React.createElement("a", {href: "options.html"}, "Options")
         )
       )
@@ -442,7 +443,7 @@ $(function(){
 
   React.render(
     React.createElement(Body, {
-      stamp: Stamp,
+      stamp: Stamp, 
       links: Links}),
     document.body
   );
