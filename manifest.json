@@ -13,5 +13,10 @@
       "js": ["assets/vendor/jquery.js", "assets/build/tools.js"]
     }
   ],
-  "options_page": "options.html"
+  "options_page": "options.html",
+  "icons": {
+             "16": "favicon.ico",
+             "48": "assets/img/app-academy-logo-chrome-48.png",
+            "128": "assets/img/app-academy-logo-chrome-128.png"
+  }
 }
