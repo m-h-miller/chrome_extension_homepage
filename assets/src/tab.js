@@ -247,9 +247,10 @@ var Pair = React.createClass({
 
     this.props.pair.forEach(function(student, index){
       var key = "link-" + student.github;
+      var url = "https://github.com/" + student.github;
 
       pair.push(
-        <Link key={key} url={student.github} title={student.name} />
+        <Link key={key} url={url} title={student.name} />
       );
 
       if (this.props.pair.length - 1 > index) {
