@@ -52,8 +52,8 @@ Links.main = [
         start: 71
       },
       {
-        title: "Final",
-        url: "https://github.com/appacademy/final-project-curriculum",
+        title: "Capstone",
+        url: "https://github.com/appacademy/capstone-project-curriculum",
         start: 81
       },
       {
@@ -81,10 +81,6 @@ Links.main = [
       {
         title: "Algorithms",
         url: "https://github.com/appacademy/algorithms-curriculum",
-      },
-      {
-        title: "Jobberwocky",
-        url: "http://jobberwocky.appacademy.io/",
       },
       {
         title: "CSS",
@@ -181,6 +177,14 @@ Links.main = [
         title: "Backbone",
         url: "http://backbonejs.org/",
       },
+      {
+        title: "Jbuilder",
+        url: "https://github.com/rails/jbuilder#jbuilder",
+      },
+      {
+        title: "React",
+        url: "https://facebook.github.io/react/docs/getting-started.html",
+      }
     ]
   },
   {
@@ -188,7 +192,7 @@ Links.main = [
     links: [
       {
         title: "HTML (what)",
-        url: "http://simon.html5.org/html5-elements",
+        url: "https://developers.whatwg.org/section-index.html#index",
       },
       {
         title: "HTML (mdn)",
