@@ -28,32 +28,32 @@ Links.main = [
     links: [
       {
         title: "Ruby",
-        url: "https://github.com/appacademy/ruby-curriculum",
+        url: "https://github.com/appacademy/ruby-curriculum/blob/master/README.md",
         start: 11
       },
       {
         title: "SQL",
-        url: "https://github.com/appacademy/sql-curriculum",
+        url: "https://github.com/appacademy/sql-curriculum/blob/master/README.md",
         start: 31
       },
       {
         title: "Rails",
-        url: "https://github.com/appacademy/rails-curriculum",
+        url: "https://github.com/appacademy/rails-curriculum/blob/master/README.md",
         start: 41
       },
       {
         title: "JS",
-        url: "https://github.com/appacademy/js-curriculum",
+        url: "https://github.com/appacademy/js-curriculum/blob/master/README.md",
         start: 54
       },
       {
         title: "Backbone",
-        url: "https://github.com/appacademy/backbone-curriculum",
+        url: "https://github.com/appacademy/backbone-curriculum/blob/master/README.md",
         start: 71
       },
       {
         title: "Capstone",
-        url: "https://github.com/appacademy/capstone-project-curriculum",
+        url: "https://github.com/appacademy/capstone-project-curriculum/blob/master/README.md",
         start: 81
       },
       {
@@ -84,7 +84,7 @@ Links.main = [
       },
       {
         title: "CSS",
-        url: "https://github.com/appacademy/css-demos/",
+        url: "https://github.com/appacademy/css-demos/blob/master/README.md",
       }
     ]
   },
