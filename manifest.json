@@ -11,6 +11,10 @@
     {
       "matches": ["*://aa-progress-tracker.herokuapp.com/*", "*://*.appacademy.io/*", "*://progress.dev/*"],
       "js": ["assets/vendor/jquery.js", "assets/build/tools.js"]
+    },
+    {
+      "matches": ["*://*.w3schools.com/*"],
+      "js": ["assets/vendor/jquery.js", "assets/build/discourage.js"]
     }
   ],
   "options_page": "options.html",
