@@ -84,7 +84,7 @@ Links.main = [
       },
       {
         title: "CSS",
-        url: "https://github.com/appacademy/css-demos/blob/master/README.md",
+        url: "https://github.com/appacademy/css-demos/blob/gh-pages/README.md",
       }
     ]
   },
