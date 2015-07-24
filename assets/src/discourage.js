@@ -1,5 +1,5 @@
 var discourage = function(){
-  var $html = $("<a href=\"https://developer.mozilla.org/en-US/docs/Web\">Dear student, App Academy strongly discourages using this website. Instead use the links provided in your new tab page or do a search on MDN.</a>");
+  var $html = $("<a href=\"https://developer.mozilla.org/en-US/docs/Web\">Dear student, App Academy strongly discourages using W3Schools. Instead use the links provided in your new tab page or do a search on MDN.</a>");
 
   $html.css({
     "display": "block",
