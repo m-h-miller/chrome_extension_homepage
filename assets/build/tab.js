@@ -160,7 +160,7 @@ var Page = React.createClass({displayName: "Page",
           day: this.props.day,
           onDeskClick: this.props.onDeskClick}),
 
-        React.createElement(PageLinks, {ord: this.props.day.ord, links: this.props.links}),
+        // React.createElement(PageLinks, {ord: this.props.day.ord, links: this.props.links}),
         React.createElement("h3", {className: "localhost"},
           React.createElement("a", {href: "http://localhost:3000/"}, "Localhost:3000")
         )
@@ -241,7 +241,7 @@ var Header = React.createClass({displayName: "Header",
 });
 
 
-var Pair = React.createClass({displayName: "Pair",
+var LinkSet = React.createClass({displayName: "LinkSet",
   render: function() {
     var setOfLinks = [];
     this.props.links.forEach(function(link, index) {
@@ -257,18 +257,6 @@ var Pair = React.createClass({displayName: "Pair",
         setOfLinks.push(" & ");
       }
     }.bind(this));
-    // this.props.pair.forEach(function(student, index){
-    //   var key = "link-" + student.github;
-    //   var url = "https://github.com/" + student.github;
-    //
-    //   pair.push(
-    //     React.createElement(Link, {key: key, url: url, title: student.name})
-    //   );
-    //
-    //   if (this.props.pair.length - 1 > index) {
-    //     pair.push(" & ");
-    //   }
-    // }.bind(this));
 
     return (
       React.createElement("span", {className: "pair"}, setOfLinks)
@@ -277,18 +265,18 @@ var Pair = React.createClass({displayName: "Pair",
 })
 
 
-var DesksPairListItem = React.createClass({displayName: "DesksPairListItem",
+var LinkSetItem = React.createClass({displayName: "LinkSetItem",
   render: function() {
     return (
       React.createElement("li", null,
-      React.createElement("strong", null, this.props.title), " — ", React.createElement(Pair, {links: this.props.links})
+      React.createElement("strong", null, this.props.title), " — ", React.createElement(LinkSet, {links: this.props.links})
       )
     );
   }
 });
 
 
-var DesksPairList = React.createClass({displayName: "DesksPairList",
+var HiddenLinksList = React.createClass({displayName: "HiddenLinksList",
   render: function() {
     var topics = [];
 
@@ -298,7 +286,7 @@ var DesksPairList = React.createClass({displayName: "DesksPairList",
       var key = topic.title;
 
       topics.push(
-        React.createElement(DesksPairListItem, {
+        React.createElement(LinkSetItem, {
           key: key,
           title: topic.title,
           links: topic.links
@@ -327,8 +315,8 @@ var HiddenLinks = React.createClass({displayName: "HiddenLinks",
         React.createElement("h2", null, "Easy Village", " ", pod.instructor && "—", " ", "pod.instructor")
       );
 
-      podDeskPairList = (
-        React.createElement(DesksPairList, {pod: pod, links: links})
+      secretLinksList = (
+        React.createElement(HiddenLinksList, {pod: pod, links: links})
       );
 
 
@@ -337,7 +325,7 @@ var HiddenLinks = React.createClass({displayName: "HiddenLinks",
         React.createElement("span", {onClick: this.props.onDeskClick}, "×"),
         React.createElement("h1", null, this.props.day.day, " Desks"),
         podName,
-        podDeskPairList
+        secretLinksList
       )
     );
   }

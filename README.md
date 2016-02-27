@@ -1,4 +1,4 @@
-# App Academy Chrome Tab
+# Chrome Tab
 
 This is a browser extension to open a custom tab with a page of links to commonly used resources.
 
