@@ -17,8 +17,8 @@ Links.corners = [
     url: "https://github.com/m-h-miller/"
   },
   {
-    title: "Tumblr",
-    url: "https://www.tumblr.com/"
+    title: "LinkedIn",
+    url: "https://www.linkedin.com/in/mhmiller1"
   }
 ];
 

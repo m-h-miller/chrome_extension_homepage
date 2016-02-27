@@ -10,21 +10,21 @@ Links.corners = [
   },
   {
     title: "Gmail",
-    url: "https://mail.google.com/mail/"
+    url: "https://mail.google.com/mail/u/1/#inbox"
   },
   {
     title: "Github",
-    url: "https://github.com/"
+    url: "https://github.com/m-h-miller"
   },
   {
-    title: "Tumblr",
-    url: "https://www.tumblr.com/"
+    title: "LinkedIn",
+    url: "https://www.linkedin.com/in/mhmiller1"
   }
 ];
 
 Links.main = [
   {
-    title: "Curriculum",
+    title: "Resources",
     links: [
       {
         title: "Ruby",
@@ -162,7 +162,7 @@ Links.main = [
     title: "JS",
     links: [
       {
-        title: "JS",
+        title: "Vanilla",
         url: "https://developer.mozilla.org/en-US/docs/JavaScript",
       },
       {

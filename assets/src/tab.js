@@ -208,24 +208,24 @@ var Header = React.createClass({
     var city = this.props.cityId == 1 ? "NYC" : "NYC";
     var weatherLeft, weatherRight;
 
-    if(this.props.weather.main){
-      var degreeCel = parseInt(this.props.weather.main.temp);
-      var degreeFar = parseInt((degreeCel * 9 / 5) + 32);
-
-      weatherLeft = (
-        <em className="weather-left">
-          {city} / {this.props.weather.weather[0].main}
-          <span className="weather-hidden"> — {this.props.weather.weather[0].description}</span>
-        </em>
-      );
-
-      weatherRight = (
-        <em className="weather-right">
-          <span className="weather-hidden">{degreeFar} &deg; F / </span>
-          {degreeCel} &deg; C
-        </em>
-      );
-    }
+    // if(this.props.weather.main){
+    //   var degreeCel = parseInt(this.props.weather.main.temp);
+    //   var degreeFar = parseInt((degreeCel * 9 / 5) + 32);
+    //
+    //   weatherLeft = (
+    //     <em className="weather-left">
+    //       {city} / {this.props.weather.weather[0].main}
+    //       <span className="weather-hidden"> — {this.props.weather.weather[0].description}</span>
+    //     </em>
+    //   );
+    //
+    //   weatherRight = (
+    //     <em className="weather-right">
+    //       <span className="weather-hidden">{degreeFar} &deg; F / </span>
+    //       {degreeCel} &deg; C
+    //     </em>
+    //   );
+    // }
 
     return (
       <header className="header group">
@@ -233,7 +233,7 @@ var Header = React.createClass({
         {weatherRight}
 
         <h1 className="logo">
-          <a href="http://www.appacademy.io/">App Academy</a>
+          <a href="http://www.facebook.com/">Home Page</a>
         </h1>
       </header>
     );

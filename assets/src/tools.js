@@ -14,9 +14,7 @@ var smile = function(){
 };
 
 var insertDeskHash = function(){
-  chrome.storage.local.get("deskHash", function(storage){
-    $("input.desk-hash").val(storage.deskHash);
-  });
+  console.log('diverted?');
 };
 
 $(document).ready(function(){
