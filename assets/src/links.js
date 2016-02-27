@@ -14,7 +14,7 @@ Links.corners = [
   },
   {
     title: "Github",
-    url: "https://github.com/"
+    url: "https://github.com/m-h-miller/"
   },
   {
     title: "Tumblr",

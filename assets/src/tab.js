@@ -205,7 +205,7 @@ var Corners = React.createClass({
 
 var Header = React.createClass({
   render: function() {
-    var city = this.props.cityId == 1 ? "NYC" : "SF";
+    var city = this.props.cityId == 1 ? "NYC" : "NYC";
     var weatherLeft, weatherRight;
 
     if(this.props.weather.main){

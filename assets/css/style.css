@@ -59,7 +59,7 @@ h1, h2 {
 
 .header {
   position: relative;
-  background: #f00;
+  background: #444;
   text-align: center;
   z-index: 4;
 }

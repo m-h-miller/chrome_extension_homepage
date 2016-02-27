@@ -126,7 +126,7 @@ var Form = React.createClass({
         </div>
 
         <div className="input">
-          <label htmlFor="select-pod">Pod</label>
+          <label htmlFor="select-pod">This</label>
           <select id="select-pod" value={this.state.podId} onChange={this.handlePodChange}>
             {podOptions}
           </select>
@@ -163,7 +163,7 @@ var Body = React.createClass({
 
         <header className="header group">
           <h1 className="logo">
-            <a href="http://www.appacademy.io/">App Academy</a>
+            <a href="http://www.mhmiller.xyz/"> M.H.M. </a>
           </h1>
         </header>
 
