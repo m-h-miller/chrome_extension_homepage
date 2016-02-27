@@ -94,28 +94,26 @@ Links.main = [
       {
         title: "API",
         url: "http://ruby-doc.org/core-2.2.0/",
-        sub: [
-          {
-            title: "Object",
-            url: "http://ruby-doc.org/core-2.2.0/Object.html",
-          },
-          {
-            title: "String",
-            url: "http://ruby-doc.org/core-2.2.0/String.html",
-          },
-          {
-            title: "Enumerable",
-            url: "http://ruby-doc.org/core-2.2.0/Enumerable.html",
-          },
-          {
-            title: "Array",
-            url: "http://ruby-doc.org/core-2.2.0/Array.html",
-          },
-          {
-            title: "Hash",
-            url: "http://ruby-doc.org/core-2.2.0/Hash.html",
-          }
-        ]
+      },
+      {
+        title: "Object",
+        url: "http://ruby-doc.org/core-2.2.0/Object.html",
+      },
+      {
+        title: "String",
+        url: "http://ruby-doc.org/core-2.2.0/String.html",
+      },
+      {
+        title: "Enumerable",
+        url: "http://ruby-doc.org/core-2.2.0/Enumerable.html",
+      },
+      {
+        title: "Array",
+        url: "http://ruby-doc.org/core-2.2.0/Array.html",
+      },
+      {
+        title: "Hash",
+        url: "http://ruby-doc.org/core-2.2.0/Hash.html",
       },
       {
         title: "Rspec",
@@ -133,28 +131,26 @@ Links.main = [
       {
         title: "Guides",
         url: "http://guides.rubyonrails.org/",
-        sub: [
-          {
-            title: "Associate",
-            url: "http://guides.rubyonrails.org/association_basics.html",
-          },
-          {
-            title: "Query",
-            url: "http://guides.rubyonrails.org/active_record_querying.html",
-          },
-          {
-            title: "Validate",
-            url: "http://guides.rubyonrails.org/active_record_validations.html",
-          },
-          {
-            title: "Render",
-            url: "http://guides.rubyonrails.org/layouts_and_rendering.html",
-          },
-          {
-            title: "Route",
-            url: "http://guides.rubyonrails.org/routing.html",
-          }
-        ]
+      },
+      {
+        title: "Associations",
+        url: "http://guides.rubyonrails.org/association_basics.html",
+      },
+      {
+        title: "Queries",
+        url: "http://guides.rubyonrails.org/active_record_querying.html",
+      },
+      {
+        title: "Validations",
+        url: "http://guides.rubyonrails.org/active_record_validations.html",
+      },
+      {
+        title: "Render",
+        url: "http://guides.rubyonrails.org/layouts_and_rendering.html",
+      },
+      {
+        title: "Route",
+        url: "http://guides.rubyonrails.org/routing.html",
       }
     ]
   },
@@ -214,6 +210,15 @@ Links.main = [
         title: "W3 Validator",
         url: "http://validator.w3.org/",
       }
+    ]
+  },
+  {
+    title:"future set",
+    links: [
+      {
+        title: "harry2",
+        url: "#",
+      },
     ]
   }
 ];

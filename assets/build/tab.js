@@ -90,7 +90,7 @@ var PageHeaderInfo = React.createClass({displayName: "PageHeaderInfo",
 
     return (
       React.createElement("div", {id: "info"},
-        React.createElement("p", null, this.props.day.dateStamp, " — ", this.props.day.day, " ", pair && "—", " ", pairComponent)
+        React.createElement("p", null, this.props.day.dateStamp, " — ", this.props.day.day, " ", "Harry")
       )
     );
   }
@@ -243,23 +243,35 @@ var Header = React.createClass({displayName: "Header",
 
 var Pair = React.createClass({displayName: "Pair",
   render: function() {
-    var pair = [];
+    var setOfLinks = [];
+    this.props.links.forEach(function(link, index) {
+      var key = "link-" + link.title,
+          url = link.url,
+          title = link.title;
 
-    this.props.pair.forEach(function(student, index){
-      var key = "link-" + student.github;
-      var url = "https://github.com/" + student.github;
+      setOfLinks.push(
+        React.createElement(Link, {key:key, url:url, title:title })
+      )
 
-      pair.push(
-        React.createElement(Link, {key: key, url: url, title: student.name})
-      );
-
-      if (this.props.pair.length - 1 > index) {
-        pair.push(" & ");
+      if (this.props.links.length - 1 > index) {
+        setOfLinks.push(" & ");
       }
     }.bind(this));
+    // this.props.pair.forEach(function(student, index){
+    //   var key = "link-" + student.github;
+    //   var url = "https://github.com/" + student.github;
+    //
+    //   pair.push(
+    //     React.createElement(Link, {key: key, url: url, title: student.name})
+    //   );
+    //
+    //   if (this.props.pair.length - 1 > index) {
+    //     pair.push(" & ");
+    //   }
+    // }.bind(this));
 
     return (
-      React.createElement("span", {className: "pair"}, pair)
+      React.createElement("span", {className: "pair"}, setOfLinks)
     )
   }
 })
@@ -269,7 +281,7 @@ var DesksPairListItem = React.createClass({displayName: "DesksPairListItem",
   render: function() {
     return (
       React.createElement("li", null,
-      React.createElement("strong", null, this.props.desk), " — ", React.createElement(Pair, {pair: this.props.pair})
+      React.createElement("strong", null, this.props.title), " — ", React.createElement(Pair, {links: this.props.links})
       )
     );
   }
@@ -278,48 +290,50 @@ var DesksPairListItem = React.createClass({displayName: "DesksPairListItem",
 
 var DesksPairList = React.createClass({displayName: "DesksPairList",
   render: function() {
-    var pairs = []
-    var desks = Object.getOwnPropertyNames(this.props.pod.pairs);
+    var topics = [];
 
-    desks.forEach(function(desk, index){
-      var key = "pair-" + index;
+    var main_topics = this.props.links;
 
-      pairs.push(
+    main_topics.forEach(function( topic ) {
+      var key = topic.title;
+
+      topics.push(
         React.createElement(DesksPairListItem, {
           key: key,
-          desk: desk,
-          pair: this.props.pod.pairs[desk]})
-      );
+          title: topic.title,
+          links: topic.links
+        })
+      )
     }.bind(this));
 
     return (
       React.createElement("ul", null,
-        pairs
+        topics
       )
     );
   }
 });
 
 
-var Desks = React.createClass({displayName: "Desks",
+var HiddenLinks = React.createClass({displayName: "HiddenLinks",
   render: function() {
+    var links = this.props.links;
     var pods = this.props.day.pods;
     var pod = pods && pods[this.props.podId];
     var deskClass = this.props.visible ? "is-active" : "";
     var podName, podDeskPairList;
 
-    if(pod){
       podName = (
-        React.createElement("h2", null, pod.name, " ", pod.instructor && "—", " ", pod.instructor)
+        React.createElement("h2", null, "Easy Village", " ", pod.instructor && "—", " ", "pod.instructor")
       );
 
       podDeskPairList = (
-        React.createElement(DesksPairList, {pod: pod})
+        React.createElement(DesksPairList, {pod: pod, links: links})
       );
-    }
+
 
     return (
-      React.createElement("article", {className: deskClass, id: "desks"},
+      React.createElement("article", {className: deskClass, id: "hiddenLinks"},
         React.createElement("span", {onClick: this.props.onDeskClick}, "×"),
         React.createElement("h1", null, this.props.day.day, " Desks"),
         podName,
@@ -331,23 +345,22 @@ var Desks = React.createClass({displayName: "Desks",
 
 
 var Body = React.createClass({displayName: "Body",
-  mixins: [CityMixin],
+  mixins: [ CityMixin ],
   getWeather: function(){
-    var weatherId = (this.getCityId() == 2) ? 5391959 : 5128581;
-    var url = "http://api.openweathermap.org/data/2.5/weather?id=" + weatherId + "&units=metric";
+    var url = "http://api.openweathermap.org/data/2.5/weather?lat=40&lon=-74&appid=44db6a862fba0b067b1930da0d769e98";
     var weather = JSON.parse(localStorage["weather"] || "{}");
-
-    if(!weather || weather.timeStamp != this.props.stamp.time){
+    if (!weather || weather.timeStamp != this.props.stamp.time){
       $.getJSON(url, function(data){
         data.timeStamp = this.props.stamp.time;
 
         localStorage["weather"] = JSON.stringify(data);
-        this.setState({weather: data});
+        this.setState({ weather: data });
+        console.log("local storage accessed? in #getWeather");
       }.bind(this));
     }
-
     return weather;
   },
+
   getDay: function(){
     var url = "http://progress.appacademy.io/api/pairs.json?city_id=" + this.getCityId();
     var day = JSON.parse(localStorage["day"] || "{}");
@@ -372,6 +385,7 @@ var Body = React.createClass({displayName: "Body",
   componentDidMount: function() {
     this.getCityByIP();
   },
+
   getInitialState: function() {
     return {
       cityId: localStorage["cityId"],
@@ -397,7 +411,8 @@ var Body = React.createClass({displayName: "Body",
         React.createElement(Corners, {
           corners: this.props.links.corners}),
 
-        React.createElement(Desks, {
+        React.createElement(HiddenLinks, {
+          links: this.props.links.main,
           podId: this.state.podId,
           day: this.state.day,
           visible: this.state.deskVisible,
