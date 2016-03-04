@@ -306,24 +306,21 @@ var HiddenLinksList = React.createClass({displayName: "HiddenLinksList",
 var HiddenLinks = React.createClass({displayName: "HiddenLinks",
   render: function() {
     var links = this.props.links;
-    var pods = this.props.day.pods;
-    var pod = pods && pods[this.props.podId];
     var deskClass = this.props.visible ? "is-active" : "";
     var podName, podDeskPairList;
 
       podName = (
-        React.createElement("h2", null, "Easy Village", " ", pod.instructor && "—", " ", "pod.instructor")
+        React.createElement("h2", null, "( edit links in assets/build/links.js )", " ", "pod.instructor" && "—", " ", "pod.instructor")
       );
 
       secretLinksList = (
-        React.createElement(HiddenLinksList, {pod: pod, links: links})
+        React.createElement(HiddenLinksList, { links: links })
       );
-
 
     return (
       React.createElement("article", {className: deskClass, id: "hiddenLinks"},
         React.createElement("span", {onClick: this.props.onDeskClick}, "×"),
-        React.createElement("h1", null, this.props.day.day, " Desks"),
+        React.createElement("h1", null, "Secret Links"),
         podName,
         secretLinksList
       )

@@ -110,11 +110,11 @@ nav a {
   display: block;
   padding: 5px 5px;
 
-  border: 1px solid #222;
+  border: 1px solid #333;
 
-  font-weight: 300;
+  font-weight: 700;
   z-index: 12;
-  font-family: Montserrat,sans-serif;
+  font-family: sans-serif;
 
   letter-spacing: .4em;
   font-size: 1.29186vw;
@@ -122,13 +122,12 @@ nav a {
   border-radius: 5px;
   border-color:#ddd;
 
-  color:#000;
+  color:#333;
 }
 
 nav a:hover {
-  /*color: #00f;*/
-  /*border-color: #00f;*/
-  background:#aaa;
+  border-color: #ffe;
+  background:#ffa;
 }
 
     nav li:nth-child(4) > a {
@@ -325,9 +324,13 @@ section li a:hover {
   transform: translateY(-50%) translateX(-50%);
   min-width: 400px;
   padding: 50px 60px;
-  background: #00f;
-  color: #fff;
+  background: #ffa;
+  color: #333;
   text-align: left;
+  border: 1px transparent;
+  border-radius:20px;
+
+  /*background: #e9dccb;*/
   /*font-family:"Montserrat";*/
 }
 
@@ -392,7 +395,7 @@ footer a {
   width: 40px;
   height: 0;
   overflow: hidden;
-  background: url("../img/facivon.ico") no-repeat 0 0;
+  background: url("../img/favicon.ico") no-repeat 0 0;
   background-size: 40px;
   z-index: 5;
 }
