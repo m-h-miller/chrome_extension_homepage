@@ -5,11 +5,15 @@ var Links = {
 
 Links.corners = [
   {
-    title: "Progress",
-    url: "http://progress.appacademy.io/"
+    title: "Slack",
+    url: "https://refersion.slack.com/"
   },
   {
-    title: "Gmail",
+    title: "Refersion Mail",
+    url: "https://mail.google.com/mail/u/2/#inbox"
+  },
+  {
+    title: "Penn Mail",
     url: "https://mail.google.com/mail/u/1/#inbox"
   },
   {
@@ -19,7 +23,16 @@ Links.corners = [
   {
     title: "LinkedIn",
     url: "https://www.linkedin.com/in/mhmiller1"
+  },
+  {
+    title: "Intercom",
+    url: "https://app.intercom.io/"
+  },
+  {
+    title: "WeWork",
+    url: "https://members.wework.com/"
   }
+
 ];
 
 Links.main = [

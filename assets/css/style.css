@@ -106,9 +106,11 @@ h1, h2 {
 }
 
 nav a {
-  position: fixed;
-  display: block;
+  /*position: fixed;
+  display: block;*/
   padding: 5px 5px;
+
+  margin-left: 25px;
 
   border: 1px solid #333;
 
@@ -123,6 +125,8 @@ nav a {
   border-color:#ddd;
 
   color:#333;
+
+  background-color:#EEE;
 }
 
 nav a:hover {
@@ -152,8 +156,8 @@ nav a:hover {
 
 .wrap {
   position: fixed;
-  top: 50%;
-  left: 50%;
+  top: 30%;
+  left: 80%;
   margin-left: -500px;
   margin-top: -50px;
   width: 1000px;
